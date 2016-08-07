@@ -1,0 +1,28 @@
+{
+  "name": "basic-socket-server",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "socket.io": "^1.4.8"
+  },
+  "description": "basic socket server",
+  "main": "app.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dyammarcano/basic-socket-server.git"
+  },
+  "keywords": [
+    "socket.io",
+    "server"
+  ],
+  "author": "Dyam Marcano <dyam.marcano@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dyammarcano/basic-socket-server/issues"
+  },
+  "homepage": "https://github.com/dyammarcano/basic-socket-server#readme"
+}
