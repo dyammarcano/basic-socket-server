@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "ci":"test.js"
   },
   "dependencies": {
     "socket.io": "^1.4.8"
