@@ -1,14 +1,14 @@
 const server = require('http').createServer();
 const io = require('socket.io').listen(server);
 
-io.on('conection', function (socket) {
+io.on('connection', function (spark) {
   console.log("User Connected");
 
-  socket.on('message', function (spark) {
-    io.emit('message', spark);
+  spark.on('message', function (msg) {
+    io.emit('message', msg);
   });
 });
 
-server.listen(3000, function () {
+server.listen(9800, function () {
   console.log("Server Running...");
 });
