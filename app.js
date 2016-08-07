@@ -5,6 +5,7 @@ io.on('connection', function (spark) {
   console.log("User Connected");
 
   spark.on('message', function (msg) {
+  	console.log('mag:', msg);
     io.emit('message', msg);
   });
 });
