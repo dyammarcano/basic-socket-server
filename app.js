@@ -1,15 +1,29 @@
 const server = require('http').createServer();
 const io = require('socket.io').listen(server);
+const cache = require('./lib/memstorage');
+const message = require("./modules/message");
 
-io.on('connection', function (spark) {
-  console.log("User Connected");
 
-  spark.on('message', function (msg) {
-  	console.log('mag:', msg);
-    io.emit('message', msg);
-  });
+users = [];
+connections = [];
+
+cache.put('foo', 'bar');
+console.log(cache.get('foo'));
+
+let port = 9800;
+
+server.listen(port, function() {
+  console.log(`Socket.io Server on port ${port} is now Running...`);
 });
 
-server.listen(9800, function () {
-  console.log("Server Running...");
+io.on('connection', function(spark) {
+  console.log(`${new Date()}: ${spark.id} Connect`);
+  connections.push(spark);
+
+  spark.on('disconnect', function(msg) {
+    connections.splice(connections.indexOf(spark), 1);
+    console.log(`${new Date()}: ${spark.id} Disconnect`);
+  });
+
+  message(io, spark);
 });

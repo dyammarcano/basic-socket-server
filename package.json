@@ -3,15 +3,21 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node app.js",
-    "ci":"test.js"
+    "start": "nodemon app.js",
+    "reinstall": "rimraf -- node_modules && npm install",
+    "ci": "test.js"
   },
   "dependencies": {
-    "socket.io": "^1.4.8"
+    "immutable": "^3.8.1",
+    "rx": "^4.1.0",
+    "socket.io": "^1.4.8",
+    "socket.io-stream": "^0.9.0"
   },
   "description": "basic socket server",
   "main": "app.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^1.10.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dyammarcano/basic-socket-server.git"
