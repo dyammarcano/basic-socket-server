@@ -2,9 +2,18 @@ const User = require('../models/account');
 
 module.exports = (socket, data) => {
 
-  if (data.id !== undefined) {
+  var user = socket.account;
 
-    User.findById(data.id, /*"-password -salt -__v -created",*/(err, account) => {
+  if (user.role !== 200) {
+
+    User.find({
+      _id: {
+        $ne: user.id,
+      },
+      password: {
+        $exists: false,
+      },
+    }, '-password -salt -__v -created', (err, account) => {
       if (err) {
         throw err;
       }
@@ -12,7 +21,17 @@ module.exports = (socket, data) => {
       send(res, 200, account);
     });
   } else {
-    User.findById(data.id, /*"-password -salt -__v -created",*/(err, account) => {
+
+    User.find({
+      department: {
+        $eq: user.department,
+      }, _id: {
+        $ne: user.id,
+      },
+      password: {
+        $exists: false,
+      },
+    }, '-password -salt -__v -created', (err, account) => {
       if (err) {
         throw err;
       }

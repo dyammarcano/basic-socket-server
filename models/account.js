@@ -1,5 +1,3 @@
-var _this = this;
-
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 const moment = require('moment');
@@ -145,18 +143,16 @@ AccountSchema.methods.generateAdmin = (data) => {
   _this.password = crypto.pbkdf2Sync(data.password, _this.salt, 1000, 64).toString('hex');
 };
 
-AccountSchema.methods.grantAccess = () => {
-  return {
-    id: _this._id,
-    email: _this.email,
-    first_name: _this.first_name,
-    first_surname: _this.first_surname,
-    department: _this.department,
-    role: _this.role,
-    status: _this.status,
-    token: crypto.randomBytes(16).toString('hex'),
-    exp: moment().add(7, 'days').valueOf(),
-  };
+AccountSchema.methods.grantAccess = {
+  id: _this._id,
+  email: _this.email,
+  first_name: _this.first_name,
+  first_surname: _this.first_surname,
+  department: _this.department,
+  role: _this.role,
+  status: _this.status,
+  token: crypto.randomBytes(16).toString('hex'),
+  exp: moment().add(7, 'days').valueOf(),
 };
 
 module.exports = mongoose.model('Account', AccountSchema);

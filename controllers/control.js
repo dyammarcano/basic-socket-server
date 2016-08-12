@@ -64,7 +64,7 @@ module.exports.allUser = function (req, res) {
 
   if (req.user.role !== 200) {
 
-    User.find({ _id: { $ne: req.user.id }, password: { $exists: false } }, cfg.patern.hide, function (err, account) {
+    User.find({ _id: { $ne: req.user.id }, password: { $exists: false } }, '-password -salt -__v -created', function (err, account) {
       if (err) {
         throw err;
       }
@@ -73,7 +73,7 @@ module.exports.allUser = function (req, res) {
     });
   } else {
 
-    User.find({ department: { $eq: req.user.department }, _id: { $ne: req.user.id }, password: { $exists: false } }, cfg.patern.hide, function (err, account) {
+    User.find({ department: { $eq: req.user.department }, _id: { $ne: req.user.id }, password: { $exists: false } }, '-password -salt -__v -created', function (err, account) {
       if (err) {
         throw err;
       }

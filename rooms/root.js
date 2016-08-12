@@ -6,7 +6,6 @@ module.exports = (io, connections) => {
     connections.clients.push(socket);
 
     socket.on('authentication', function (data) {
-      // TODO this value must be the id of the user in database plus some others values
       if (data === '18885026') {
         socket.authorize = true;
         console.log(`${socket.id} Is Authorize`);
