@@ -7,34 +7,34 @@ var usersMap = Immutable.Map({});
 
 let port = 9810;
 
-server.listen(port, function() {
+server.listen(port, function () {
   console.log(`Rx Socket.io Server on port ${port} is now Running...`);
 });
 
-var sourceConnect = Rx.Observable.create(function(observer) {
-  io.on('connection', function(socket) {
+var sourceConnect = Rx.Observable.create(function (observer) {
+  io.on('connection', function (socket) {
     //console.log('Client connection notified to server first. Client socketId is ', socket.id);
-    socket.emit('my socketId', {'socketId': socket.id, 'connectTime': Date.now()});
-    socket.on('client connect', function(data) {
-      observer.onNext({'socket': socket, 'data': data, 'event': 'client connect'});
+    socket.emit('my socketId', { socketId: socket.id, connectTime: Date.now() });
+    socket.on('client connect', function (data) {
+      observer.onNext({ socket: socket, data: data, event: 'client connect' });
     });
   });
 
-  return function() {
+  return function () {
     io.close();
-  }
+  };
 });
 
-var sourceDisconnect = Rx.Observable.create(function(observer) {
-  io.on('connection', function(socket) {
-    socket.on('disconnect', function(data) {
-      observer.onNext({'socketId': socket.id, 'event': 'client disconnect'});
+var sourceDisconnect = Rx.Observable.create(function (observer) {
+  io.on('connection', function (socket) {
+    socket.on('disconnect', function (data) {
+      observer.onNext({ socketId: socket.id, event: 'client disconnect' });
     });
   });
 
-  return function() {
+  return function () {
     io.close();
-  }
+  };
 });
 
 var observerConnect = sourceConnect.subscribe((obj) => {

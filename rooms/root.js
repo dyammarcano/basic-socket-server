@@ -2,17 +2,17 @@ const moment = require('moment');
 
 module.exports = (io, connections) => {
   io.of('/').on('connection', (socket) => {
-    console.log(`Client ${ socket.id } is Connected to Root namespace`);
+    console.log(`Client ${socket.id} is Connected to Root namespace`);
     connections.clients.push(socket);
 
-    socket.on('authentication', function(data) {
+    socket.on('authentication', function (data) {
       // TODO this value must be the id of the user in database plus some others values
-      if(data === '18885026') {
+      if (data === '18885026') {
         socket.authorize = true;
-        console.log(`${ socket.id } Is Authorize`);
+        console.log(`${socket.id} Is Authorize`);
         socket.emit('authentication', data);
       } else {
-        console.log(`${ socket.id } Not authorize`);
+        console.log(`${socket.id} Not authorize`);
       }
     });
 
@@ -20,14 +20,14 @@ module.exports = (io, connections) => {
       socket.emit('log', moment().locale('us').format(`MM-DD-YYYY HH:mm:ss`));
     }, 500);
 
-    socket.on('join', (room) => { 
-      console.log(`joining room ${ room }`);
-      socket.join(room); 
+    socket.on('join', (room) => {
+      console.log(`joining room ${room}`);
+      socket.join(room);
     });
 
-    socket.on('leave', (room) => {  
-      console.log(`leaving room ${ room }`);
-      socket.leave(room); 
+    socket.on('leave', (room) => {
+      console.log(`leaving room ${room}`);
+      socket.leave(room);
     });
 
     socket.on('login', (data) => {
@@ -35,11 +35,11 @@ module.exports = (io, connections) => {
     });
 
     setTimeout(() => {
-      socket.emit('stats', { 'new in root': socket.id, 'total': connections.length });
+      socket.emit('stats', { 'new in root': socket.id, total: connections.length });
     }, 500);
 
     socket.on('disconnect', (msg) => {
-      console.log(`Client ${ socket.id } is Disconnect to Root namespace`);
+      console.log(`Client ${socket.id} is Disconnect to Root namespace`);
       connections.clients.splice(connections.clients.indexOf(socket), 1);
     });
   });

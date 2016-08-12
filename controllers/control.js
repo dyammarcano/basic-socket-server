@@ -1,20 +1,19 @@
 var User           = require('../models/account');
 var cfg            = require('../config');
 
-var send = function(res, status, content) {
+var send = function (res, status, content) {
   res.status(status);
   res.json(content);
 };
 
-var roles = function(req, res) {
+var roles = function (req, res) {
 
   if (req.user.role === 200) {
     return send(res, 401, { access: false });
   }
 };
 
-
-module.exports.profile = function(req, res) {
+module.exports.profile = function (req, res) {
 
   if (req.params.id !== undefined) {
 
@@ -22,6 +21,7 @@ module.exports.profile = function(req, res) {
       if (err) {
         throw err;
       }
+
       send(res, 200, account);
     });
   } else {
@@ -29,63 +29,65 @@ module.exports.profile = function(req, res) {
       if (err) {
         throw err;
       }
+
       send(res, 200, account);
     });
   }
 };
 
-
-module.exports.allAdmin = function(req, res) {
+module.exports.allAdmin = function (req, res) {
 
   roles(req, res);
 
   if (req.user.role !== 200) {
-    
+
     User.find({ _id: { $ne: req.user.id }, password: { $exists: true } }, cfg.patern.hide, function (err, account) {
       if (err) {
         throw err;
       }
+
       send(res, 200, account);
     });
   } else {
 
-      User.find({ department: { $eq: req.user.department }, _id: { $ne: req.user.id }, password: { $exists: true } }, cfg.patern.hide, function (err, account) {
+    User.find({ department: { $eq: req.user.department }, _id: { $ne: req.user.id }, password: { $exists: true } }, cfg.patern.hide, function (err, account) {
       if (err) {
         throw err;
       }
+
       send(res, 200, account);
     });
   }
 };
 
-
-module.exports.allUser = function(req, res) {
+module.exports.allUser = function (req, res) {
 
   if (req.user.role !== 200) {
-    
+
     User.find({ _id: { $ne: req.user.id }, password: { $exists: false } }, cfg.patern.hide, function (err, account) {
       if (err) {
         throw err;
       }
+
       send(res, 200, account);
     });
   } else {
 
-      User.find({ department: { $eq: req.user.department }, _id: { $ne: req.user.id }, password: { $exists: false } }, cfg.patern.hide, function (err, account) {
+    User.find({ department: { $eq: req.user.department }, _id: { $ne: req.user.id }, password: { $exists: false } }, cfg.patern.hide, function (err, account) {
       if (err) {
         throw err;
       }
+
       send(res, 200, account);
     });
   }
 };
 
-
-module.exports.addAdmin = function(req, res) {
+module.exports.addAdmin = function (req, res) {
 
   roles(req, res);
 
-  if(Object.keys(req.query).length >= 14) {
+  if (Object.keys(req.query).length >= 14) {
 
     var obj = new User();
 
@@ -93,22 +95,21 @@ module.exports.addAdmin = function(req, res) {
 
     obj.save(function (err) {
       if (err) {
-        send(res, 400, { "exist" : true });
+        send(res, 400, { exist: true });
       } else {
-        send(res, 200, { "saved" : true });
+        send(res, 200, { saved: true });
       }
     });
   } else {
-    send(res, 400, { "fields" : false });
+    send(res, 400, { fields: false });
   }
 };
 
-
-module.exports.addUser = function(req, res) {
+module.exports.addUser = function (req, res) {
 
   roles(req, res);
 
-  if(Object.keys(req.query).length >= 13) {
+  if (Object.keys(req.query).length >= 13) {
 
     var obj = new User();
 
@@ -116,18 +117,17 @@ module.exports.addUser = function(req, res) {
 
     obj.save(function (err) {
       if (err) {
-        send(res, 400, { "exist" : true });
+        send(res, 400, { exist: true });
       } else {
-        send(res, 200, { "saved" : true });
+        send(res, 200, { saved: true });
       }
     });
   } else {
-    send(res, 400, { "fields" : false });
+    send(res, 400, { fields: false });
   }
 };
 
-
-module.exports.update = function(req, res) {
+module.exports.update = function (req, res) {
 
   roles(req, res);
 
@@ -135,12 +135,12 @@ module.exports.update = function(req, res) {
     if (err) {
       throw err;
     }
+
     send(res, 200, user);
   });
 };
 
-
-module.exports.delete = function(req, res) {
+module.exports.delete = function (req, res) {
 
   roles(req, res);
 
@@ -148,12 +148,12 @@ module.exports.delete = function(req, res) {
     if (err) {
       throw err;
     }
-    send(res, 200, { "remove": true });
+
+    send(res, 200, { remove: true });
   });
 };
 
-
-module.exports.suspend = function(req, res) {
+module.exports.suspend = function (req, res) {
 
   roles(req, res);
 
@@ -161,11 +161,12 @@ module.exports.suspend = function(req, res) {
     if (err) {
       throw err;
     }
+
     send(res, 200, user);
   });
 };
 
-module.exports.active = function(req, res) {
+module.exports.active = function (req, res) {
 
   roles(req, res);
 
@@ -173,6 +174,7 @@ module.exports.active = function(req, res) {
     if (err) {
       throw err;
     }
+
     send(res, 200, user);
   });
 };

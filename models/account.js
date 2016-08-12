@@ -7,93 +7,93 @@ const moment = require('moment');
 const AccountSchema = new mongoose.Schema({
   role: {
     type: Number,
-    sparse: true
+    sparse: true,
   },
   first_name: {
     type: String,
-    sparse: true
+    sparse: true,
   },
   second_name: {
     type: String,
-    sparse: true
+    sparse: true,
   },
   first_surname: {
     type: String,
-    sparse: true
+    sparse: true,
   },
   second_surname: {
     type: String,
-    sparse: true
+    sparse: true,
   },
   gender: {
     type: String,
-    sparse: true
+    sparse: true,
   },
   password: {
     type: String,
-    sparse: true
+    sparse: true,
   },
   salt: {
     type: String,
-    sparse: true
+    sparse: true,
   },
   identification: {
     type: Number,
     unique: true,
-    required: true
+    required: true,
   },
   email: {
     type: String,
-    sparse: true
+    sparse: true,
   },
   age: {
     type: Number,
-    sparse: true
+    sparse: true,
   },
   phone: {
     type: String,
-    sparse: true
+    sparse: true,
   },
   birth_date: {
     type: String,
-    sparse: true
+    sparse: true,
   },
   title: {
     type: String,
-    required: true
+    required: true,
   },
   department: {
     type: String,
-    required: true
+    required: true,
   },
   employee_number: {
     type: Number,
-    required: true
+    required: true,
   },
   lat: {
     type: String,
-    sparse: true
+    sparse: true,
   },
   lng: {
     type: String,
-    sparse: true
+    sparse: true,
   },
   civil_status: {
     type: Number,
-    sparse: true
+    sparse: true,
   },
   works_from: {
     type: String,
-    sparse: true
+    sparse: true,
   },
   status: {
     type: String,
-    default: 'active'
+    default: 'active',
   },
   created: {
     type: String,
-    default: moment().locale('us').format(`MM-DD-YYYY HH:mm:ss`)
-  }
+    default: moment().locale('us').format(`MM-DD-YYYY HH:mm:ss`),
+  },
 });
 
 var _this = this;
@@ -105,7 +105,8 @@ AccountSchema.methods.setPassword = (data) => {
 
 AccountSchema.methods.validPassword = (data) => {
   const hash = crypto.pbkdf2Sync(data, _this.salt, 1000, 64, 'sha1').toString('hex');
-  console.log(`hash: ${ hash }\nsalt: ${ _this.salt }`);
+  console.log(`hash: ${hash}
+salt: ${_this.salt}`);
   _this.password === hash;
 };
 
@@ -154,7 +155,7 @@ AccountSchema.methods.grantAccess = () => {
     role: _this.role,
     status: _this.status,
     token: crypto.randomBytes(16).toString('hex'),
-    exp: moment().add(7, 'days').valueOf()
+    exp: moment().add(7, 'days').valueOf(),
   };
 };
 
