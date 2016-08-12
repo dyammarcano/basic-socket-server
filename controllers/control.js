@@ -18,14 +18,14 @@ module.exports.profile = function(req, res) {
 
   if (req.params.id !== undefined) {
 
-    User.findById(req.params.id, cfg.patern.hide, function (err, account) {
+    User.findById(req.params.id, /*"-password -salt -__v -created",*/ function (err, account) {
       if (err) {
         throw err;
       }
       send(res, 200, account);
     });
   } else {
-    User.findById(req.user.id, cfg.patern.hide, function (err, account) {
+    User.findById(req.user.id, /*"-password -salt -__v -created",*/ function (err, account) {
       if (err) {
         throw err;
       }

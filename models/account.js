@@ -1,11 +1,10 @@
-var cfg            = require('../config'); 
-var mongoose       = require('mongoose');
-var crypto         = require('crypto');
-var moment         = require('moment');
-var jwt            = require('jsonwebtoken');
+var _this = this;
 
+const mongoose = require('mongoose');
+const crypto = require('crypto');
+const moment = require('moment');
 
-var AccountSchema = new mongoose.Schema({
+const AccountSchema = new mongoose.Schema({
   role: {
     type: Number,
     sparse: true
@@ -41,7 +40,7 @@ var AccountSchema = new mongoose.Schema({
   identification: {
     type: Number,
     unique: true,
-    required : true
+    required: true
   },
   email: {
     type: String,
@@ -61,15 +60,15 @@ var AccountSchema = new mongoose.Schema({
   },
   title: {
     type: String,
-    required : true
+    required: true
   },
   department: {
     type: String,
-    required : true
+    required: true
   },
   employee_number: {
     type: Number,
-    required : true
+    required: true
   },
   lat: {
     type: String,
@@ -87,71 +86,76 @@ var AccountSchema = new mongoose.Schema({
     type: String,
     sparse: true
   },
-  status: { 
-    type: String, 
-    default: 'active' 
+  status: {
+    type: String,
+    default: 'active'
   },
-  created: { 
-    type: String, 
-    default: moment().locale('es').format("dddd, MMMM Do YYYY, HH:mm:ss")
-  },
+  created: {
+    type: String,
+    default: moment().locale('us').format(`MM-DD-YYYY HH:mm:ss`)
+  }
 });
 
-AccountSchema.methods.setPassword = function(raw_password) {
-  this.salt = crypto.randomBytes(16).toString('hex');
-  this.password = crypto.pbkdf2Sync(raw_password, this.salt, 1000, 64).toString('hex');
+var _this = this;
+
+AccountSchema.methods.setPassword = (data) => {
+  _this.salt = crypto.randomBytes(16).toString('hex');
+  _this.password = crypto.pbkdf2Sync(data, _this.salt, 1000, 64, 'sha1').toString('hex');
 };
 
-AccountSchema.methods.validPassword = function(raw_password) {
-  return this.password === crypto.pbkdf2Sync(raw_password, this.salt, 1000, 64).toString('hex');
+AccountSchema.methods.validPassword = (data) => {
+  const hash = crypto.pbkdf2Sync(data, _this.salt, 1000, 64, 'sha1').toString('hex');
+  console.log(`hash: ${ hash }\nsalt: ${ _this.salt }`);
+  _this.password === hash;
 };
 
-AccountSchema.methods.generateUser = function(data) {
-  this.first_name      = data.first_name.toLowerCase();
-  this.second_name     = data.second_name.toLowerCase();
-  this.first_surname   = data.first_surname.toLowerCase();
-  this.second_surname  = data.second_surname.toLowerCase();
-  this.identification  = data.identification.toLowerCase();
-  this.email           = data.email.toLowerCase();
-  this.age             = data.age.toLowerCase();
-  this.phone           = data.phone.toLowerCase();
-  this.birth_date      = data.birth_date.toLowerCase();
-  this.title           = data.title.toLowerCase();
-  this.department      = data.department.toLowerCase();
-  this.employee_number = data.employee_number.toLowerCase();
-  this.works_from      = data.works_from.toLowerCase();
+AccountSchema.methods.generateUser = (data) => {
+  _this.first_name = data.first_name.toLowerCase();
+  _this.second_name = data.second_name.toLowerCase();
+  _this.first_surname = data.first_surname.toLowerCase();
+  _this.second_surname = data.second_surname.toLowerCase();
+  _this.identification = data.identification.toLowerCase();
+  _this.email = data.email.toLowerCase();
+  _this.age = data.age.toLowerCase();
+  _this.phone = data.phone.toLowerCase();
+  _this.birth_date = data.birth_date.toLowerCase();
+  _this.title = data.title.toLowerCase();
+  _this.department = data.department.toLowerCase();
+  _this.employee_number = data.employee_number.toLowerCase();
+  _this.works_from = data.works_from.toLowerCase();
 };
 
-AccountSchema.methods.generateAdmin = function(data) {
-  this.role            = data.role.toLowerCase();
-  this.first_name      = data.first_name.toLowerCase();
-  this.second_name     = data.second_name.toLowerCase();
-  this.first_surname   = data.first_surname.toLowerCase();
-  this.second_surname  = data.second_surname.toLowerCase();
-  this.identification  = data.identification.toLowerCase();
-  this.email           = data.email.toLowerCase();
-  this.age             = data.age.toLowerCase();
-  this.phone           = data.phone.toLowerCase();
-  this.birth_date      = data.birth_date.toLowerCase();
-  this.title           = data.title.toLowerCase();
-  this.department      = data.department.toLowerCase();
-  this.employee_number = data.employee_number.toLowerCase();
-  this.works_from      = data.works_from.toLowerCase();
-  this.salt            = crypto.randomBytes(16).toString('hex');
-  this.password        = crypto.pbkdf2Sync(data.password, this.salt, 1000, 64).toString('hex');
+AccountSchema.methods.generateAdmin = (data) => {
+  _this.role = data.role.toLowerCase();
+  _this.first_name = data.first_name.toLowerCase();
+  _this.second_name = data.second_name.toLowerCase();
+  _this.first_surname = data.first_surname.toLowerCase();
+  _this.second_surname = data.second_surname.toLowerCase();
+  _this.identification = data.identification.toLowerCase();
+  _this.email = data.email.toLowerCase();
+  _this.age = data.age.toLowerCase();
+  _this.phone = data.phone.toLowerCase();
+  _this.birth_date = data.birth_date.toLowerCase();
+  _this.title = data.title.toLowerCase();
+  _this.department = data.department.toLowerCase();
+  _this.employee_number = data.employee_number.toLowerCase();
+  _this.works_from = data.works_from.toLowerCase();
+  _this.salt = crypto.randomBytes(16).toString('hex');
+  _this.password = crypto.pbkdf2Sync(data.password, _this.salt, 1000, 64).toString('hex');
 };
 
-AccountSchema.methods.generateJwt = function() {
-  return jwt.sign({
-    id:            this._id,
-    email:         this.email,
-    first_name:    this.first_name,
-    first_surname: this.first_surname,
-    department:    this.department,
-    role:          this.role,
-    status:        this.status,
-    exp:           moment().add(7, 'days').valueOf(),
-  }, cfg.secret);
+AccountSchema.methods.grantAccess = () => {
+  return {
+    id: _this._id,
+    email: _this.email,
+    first_name: _this.first_name,
+    first_surname: _this.first_surname,
+    department: _this.department,
+    role: _this.role,
+    status: _this.status,
+    token: crypto.randomBytes(16).toString('hex'),
+    exp: moment().add(7, 'days').valueOf()
+  };
 };
 
 module.exports = mongoose.model('Account', AccountSchema);

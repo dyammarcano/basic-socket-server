@@ -1,29 +1,57 @@
 const server = require('http').createServer();
-const io = require('socket.io').listen(server);
-const cache = require('./lib/memstorage');
-const message = require("./modules/message");
+const io = require('socket.io')(server);
+const mongoose = require('mongoose');
+const dbname = "mongodb://localhost/hotel";
 
+mongoose.connect(dbname);
 
-users = [];
-connections = [];
-
-cache.put('foo', 'bar');
-console.log(cache.get('foo'));
-
-let port = 9800;
-
-server.listen(port, function() {
-  console.log(`Socket.io Server on port ${port} is now Running...`);
+// CONNECTION EVENTS
+mongoose.connection.on('connected', function() {
+  console.log(`Mongoose connected to ${dbname}`);
 });
 
-io.on('connection', function(spark) {
-  console.log(`${new Date()}: ${spark.id} Connect`);
-  connections.push(spark);
+mongoose.connection.on('error', function(err) {
+  console.log(`Mongoose connection error: ${err}`);
+});
 
-  spark.on('disconnect', function(msg) {
-    connections.splice(connections.indexOf(spark), 1);
-    console.log(`${new Date()}: ${spark.id} Disconnect`);
+mongoose.connection.on('disconnected', function() {
+  console.log(`Mongoose disconnected`);
+});
+
+/*require('socketio-auth')(io, {
+  authenticate: authenticate,
+  postAuthenticate: postAuthenticate,
+  timeout: 60000
+});*/
+
+
+
+function postAuthenticate(socket, data) {
+  User.findOne({ email: data.email }, function(err, account) {
+    socket.client.user = account;
   });
+}
 
-  message(io, spark);
+sessions = [];
+logs = [];
+clients = [];
+users = [];
+
+connections = {
+  sessions,
+  clients,
+  logs,
+  users
+};
+
+let port = 9801;
+
+server.listen(port, () => {
+  console.log(`Socket.io Server on port ${ port } is now Running...`);
 });
+
+/*root room socket*/
+require("./rooms/root")(io, connections);
+
+/*pop room socket*/
+require("./rooms/pop")(io, connections);
